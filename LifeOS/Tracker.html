@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS — Personal Transformation Tracker</title>
+  <meta name="description"
+    content="Personal life transformation command center — track mental mastery, physical strength, stamina, vocal power, and AI/ML career advancement.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+</head>
+
+<body>
+
+  <div class="app-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="logo-icon">🔥</div>
+          <div>
+            <h1>LifeOS</h1>
+            <div class="version">v1.0 · Transformation Tracker</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" data-section="dashboard">
+          <span class="nav-icon">📊</span> Dashboard
+        </div>
+        <div class="nav-item" data-section="schedule">
+          <span class="nav-icon">📅</span> Daily Schedule
+        </div>
+
+        <div class="nav-section-label">Tracking</div>
+        <div class="nav-item" data-section="habits">
+          <span class="nav-icon">✅</span> Habit Tracker
+        </div>
+        <div class="nav-item" data-section="scorecard">
+          <span class="nav-icon">📊</span> Weekly Scorecard
+        </div>
+        <div class="nav-item" data-section="workout">
+          <span class="nav-icon">💪</span> Workout Log
+        </div>
+
+        <div class="nav-section-label">Growth</div>
+        <div class="nav-item" data-section="timeline">
+          <span class="nav-icon">🗺️</span> Phase Timeline
+        </div>
+        <div class="nav-item" data-section="reading">
+          <span class="nav-icon">📚</span> Reading List
+        </div>
+        <div class="nav-item" data-section="review">
+          <span class="nav-icon">🔄</span> Monthly Review
+        </div>
+
+        <div class="nav-section-label">Data</div>
+        <div class="nav-item" onclick="exportData(); event.stopPropagation();" style="cursor:pointer">
+          <span class="nav-icon">📦</span> Export Backup
+        </div>
+        <div class="nav-item" onclick="importData(); event.stopPropagation();" style="cursor:pointer">
+          <span class="nav-icon">📥</span> Import Backup
+        </div>
+        <div class="nav-item" onclick="clearAllData(); event.stopPropagation();"
+          style="cursor:pointer;color:var(--accent-red);opacity:0.6">
+          <span class="nav-icon">🗑️</span> Clear All Data
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div id="saveIndicator"
+          style="text-align:center;font-size:11px;color:var(--text-muted);padding:6px 0;transition:all 0.3s ease;">💾
+          Auto-saved</div>
+        <div class="phase-indicator">
+          <div class="phase-label">Current Phase</div>
+          <div class="phase-name" id="phaseNameSidebar">Loading...</div>
+          <div class="phase-dates" id="phaseDatesSidebar">—</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+      <!-- === DASHBOARD === -->
+      <div class="section active" id="section-dashboard">
+        <div class="dashboard-greeting">
+          <h2 id="dashGreeting">Good morning, <span>Bhavesh</span> 🔥</h2>
+          <div class="date-display" id="dashDate"></div>
+        </div>
+
+        <!-- Quote -->
+        <div class="quote-card">
+          <div class="quote-icon">💬</div>
+          <blockquote id="quoteText"></blockquote>
+        </div>
+
+        <!-- Domain Progress Cards -->
+        <div class="domain-grid" id="domainGrid"></div>
+
+        <!-- Today's Overview -->
+        <div class="dashboard-row three-col">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📅 Today's Progress</div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="completion-bar">
+                  <div class="completion-fill" id="dashTasksBar" style="width:0%"></div>
+                </div>
+                <span class="completion-text" id="dashTasksCompleted">0/17</span>
+              </div>
+            </div>
+            <div id="dashUpcoming" style="max-height:220px;overflow-y:auto;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🏆 Personal Records</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;">
+                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Bench</div>
+                <div
+                  style="font-size:22px;font-weight:800;background:var(--gradient-fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"
+                  id="dashPRBench">0</div>
+                <div style="font-size:11px;color:var(--text-secondary);">kg</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;">
+                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Deadlift</div>
+                <div
+                  style="font-size:22px;font-weight:800;background:var(--gradient-fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"
+                  id="dashPRDeadlift">0</div>
+                <div style="font-size:11px;color:var(--text-secondary);">kg</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;">
+                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Squat</div>
+                <div
+                  style="font-size:22px;font-weight:800;background:var(--gradient-fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"
+                  id="dashPRSquat">0</div>
+                <div style="font-size:11px;color:var(--text-secondary);">kg</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;">
+                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Pull-ups</div>
+                <div
+                  style="font-size:22px;font-weight:800;background:var(--gradient-fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"
+                  id="dashPRPullups">0</div>
+                <div style="font-size:11px;color:var(--text-secondary);">reps</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- === DAILY SCHEDULE === -->
+      <div class="section" id="section-schedule">
+        <div class="page-header">
+          <h2>📅 Daily Schedule</h2>
+          <div class="page-subtitle">Your structured day from 5 AM to 9:30 PM — check off tasks as you complete them
+          </div>
+        </div>
+
+        <div class="schedule-date-nav">
+          <button onclick="prevDay()">◀</button>
+          <div class="current-date" id="scheduleCurrentDate"></div>
+          <button onclick="nextDay()">▶</button>
+          <div class="schedule-completion">
+            <div class="completion-bar" style="width:200px;">
+              <div class="completion-fill" id="scheduleCompletionFill"></div>
+            </div>
+            <span class="completion-text" id="scheduleCompletionText">0%</span>
+          </div>
+        </div>
+
+        <div class="schedule-list" id="scheduleList"></div>
+      </div>
+
+      <!-- === HABIT TRACKER === -->
+      <div class="section" id="section-habits">
+        <div class="page-header">
+          <h2>✅ Habit Tracker</h2>
+          <div class="page-subtitle">Click cells to mark habits complete — build your streaks day by day</div>
+        </div>
+
+        <div class="habits-header">
+          <div class="habits-month-nav">
+            <button onclick="prevHabitMonth()">◀</button>
+            <div class="month-label" id="habitMonthLabel"></div>
+            <button onclick="nextHabitMonth()">▶</button>
+          </div>
+        </div>
+
+        <div class="habit-grid-wrapper">
+          <div class="habit-day-headers" id="habitDayHeaders"></div>
+          <div class="habit-grid" id="habitGrid"></div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="card-title" style="margin-bottom:12px;">🔥 Current Streaks</div>
+          <div class="streaks-row" id="habitStreaks"></div>
+        </div>
+      </div>
+
+      <!-- === WEEKLY SCORECARD === -->
+      <div class="section" id="section-scorecard">
+        <div class="page-header">
+          <h2>📊 Weekly Scorecard</h2>
+          <div class="page-subtitle">Track your weekly metrics against targets — fill in each Sunday</div>
+        </div>
+
+        <div class="scorecard-week-nav">
+          <button onclick="prevWeek()">◀</button>
+          <div class="current-date" id="scorecardWeekLabel"></div>
+          <button onclick="nextWeek()">▶</button>
+        </div>
+
+        <div class="scorecard-grid" id="scorecardGrid"></div>
+      </div>
+
+      <!-- === WORKOUT LOG === -->
+      <div class="section" id="section-workout">
+        <div class="page-header">
+          <h2>💪 Workout Log</h2>
+          <div class="page-subtitle">Log your training sessions, runs, and track personal records</div>
+        </div>
+
+        <div class="workout-tabs">
+          <div class="workout-tab active" data-tab="log">🏋️ Workouts</div>
+          <div class="workout-tab" data-tab="running">🏃 Running</div>
+          <div class="workout-tab" data-tab="prs">🏆 Personal Records</div>
+        </div>
+
+        <div id="workoutContent"></div>
+      </div>
+
+      <!-- === PHASE TIMELINE === -->
+      <div class="section" id="section-timeline">
+        <div class="page-header">
+          <h2>🗺️ Phase Timeline</h2>
+          <div class="page-subtitle">Your 28-month transformation journey — click milestones to mark them complete</div>
+        </div>
+
+        <div class="timeline-container" id="timelineContainer"></div>
+      </div>
+
+      <!-- === READING LIST === -->
+      <div class="section" id="section-reading">
+        <div class="page-header">
+          <h2>📚 Reading List</h2>
+          <div class="page-subtitle">15 books across all phases — click status to cycle: Not Started → Reading →
+            Completed</div>
+        </div>
+
+        <div id="readingContent"></div>
+      </div>
+
+      <!-- === MONTHLY REVIEW === -->
+      <div class="section" id="section-review">
+        <div class="page-header">
+          <h2>🔄 Monthly Review</h2>
+          <div class="page-subtitle">Reflect on your progress every month — answer honestly and review past entries
+          </div>
+        </div>
+
+        <div class="review-month-nav">
+          <button onclick="prevReviewMonth()">◀</button>
+          <div class="current-date" id="reviewMonthLabel"></div>
+          <button onclick="nextReviewMonth()">▶</button>
+        </div>
+
+        <div class="review-form" id="reviewForm"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+
+  <!-- Additional dashboard PR rendering -->
+  <script>
+    // Hook into dashboard to also show PRs
+    const origRenderDashboard = renderDashboard;
+    renderDashboard = function () {
+      origRenderDashboard();
+      const pr = appData.personalRecords;
+      const el = (id) => document.getElementById(id);
+      if (el('dashPRBench')) el('dashPRBench').textContent = pr.bench || 0;
+      if (el('dashPRDeadlift')) el('dashPRDeadlift').textContent = pr.deadlift || 0;
+      if (el('dashPRSquat')) el('dashPRSquat').textContent = pr.squat || 0;
+      if (el('dashPRPullups')) el('dashPRPullups').textContent = pr.pullups || 0;
+    };
+  </script>
+
+</body>
+
+</html>
